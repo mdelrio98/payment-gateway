@@ -175,5 +175,10 @@ export enum FiatCurrency {
     UYU = "UYU",
     // (You can add more fiat currencies here in the same format)
 }
-  
+
+
+export interface Option<T> {
+  label: string;
+  value: T;
+};
   

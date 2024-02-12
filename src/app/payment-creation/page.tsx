@@ -1,31 +1,107 @@
-import React, { useState } from "react";
+'use client'
+import React, { useEffect, useState } from "react";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import * as yup from "yup";
+import Button from "../ui/Button";
+import TextArea from "../ui/TextArea";
+import Dropdown from "../ui/Dropdown";
+import fetchCurrencies, { fiatCurrencyOptions } from "../lib/data";
+import { ICurrency, Option } from '../lib/definitions';
+import Card from "../ui/Card";
+import Input from "../ui/Input";
+import { yupResolver } from "@hookform/resolvers/yup/dist/yup.js";
 
+const schema = yup.object().shape({
+  amount: yup.number().required("Este campo es obligatorio"),
+  currency: yup.string().required("Este campo es obligatorio"),
+  concept: yup.string().required("Este campo es obligatorio"),
+});
+
+type FormValues = {
+  amount: number;
+  currency: string;
+  concept: string;
+};
 
 const PaymentForm = () => {
-    return (
-        <div className="bg-white shadow-md rounded-lg p-4 flex flex-col mx-auto">
-        <form className="w-full flex flex-col gap-8">
-            <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">Price</label>
-            <div className="relative mt-2 rounded-md shadow-sm">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="text-gray-500 sm:text-sm">$</span>
-                </div>
-                <input type="text" name="price" id="price" className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="0.00"/>
-                <div className="absolute inset-y-0 right-0 flex items-center">
-                    <label htmlFor="currency" className="sr-only">Currency</label>
-                    <select id="currency" name="currency" className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm">
-                    <option>USD</option>
-                    <option>CAD</option>
-                    <option>EUR</option>
-                    </select>
-                </div>
-            </div>
-            <button type="submit" className="bg-blue-700 text-white">
-                Continuar
-            </button>
-        </form>
-        </div>
-    )
-}
+  const [selectedOption, setSelectedOption] = useState<Option<string> | null>(null);
+  const [currencies, setCurrencies] = useState<ICurrency[]>([]);
+  const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+    defaultValues: { amount: 0,currency:'',concept:'' }
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetchCurrencies();
+      if (response) {
+        setCurrencies(response);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSelect = (option: Option<string>) => {
+    setSelectedOption(option);
+  };
+
+  const mySubmit = (data:FormValues) => {
+    console.log(data);
+  };
+
+  return (
+    <Card>
+      <form className="w-full flex flex-col gap-8" onSubmit={handleSubmit((data) => mySubmit(data))}>
+        <h3 style={{ color: '#002859' }} className="font-bold justify-center text-center items-center">Crear pago</h3>
+        <Controller
+          name="amount"
+          control={control}
+          render={({ field }) => (
+            <Input
+            {...field}
+            onChange={(e) => field.onChange(e)}
+            value={field.value ?? ''}
+            label="Importe a pagar:"
+            placeholder="Añade importe a pagar"
+            error={errors.amount?.message}
+            />
+          )}
+        />
+        <Controller
+          name="currency"
+          control={control}
+          render={({ field }) => (
+            <Dropdown
+            {...field}
+              label="Seleccionar moneda:"
+              placeholder={selectedOption?.label ?? 'Moneda'}
+              options={currencies.map(currency => ({ label: currency.name, value: currency.symbol } as Option<string>)) ?? []}
+              onSelect={(e) => {field.onChange(e)}}
+            />
+          )}
+        />
+        <Controller
+          name="concept"
+          control={control}
+          render={({ field }) => (
+            <TextArea
+            {...field}
+              onChange={(e) => field.onChange(e)}
+              value={field.value ?? ''}
+              label="Concepto:"
+              placeholder="Añade descripcion del pago"
+              rows={5}
+              error={errors.concept?.message}
+            />
+          )}
+        />
+        <Button type="submit">
+          Continuar
+        </Button>
+      </form>
+    </Card>
+  );
+};
 
 export default PaymentForm;

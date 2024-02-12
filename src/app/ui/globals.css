@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -16,7 +17,13 @@
   }
 }
 
-body {
+body { 
+  box-sizing: border-box;
+  margin: 0;
+  padding: auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -26,8 +33,20 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+footer{
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
+
+
+
+
+
+

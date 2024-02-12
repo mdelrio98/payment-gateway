@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Mulish } from "next/font/google";
 import "./ui/globals.css";
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import { config } from '@fortawesome/fontawesome-svg-core';
+config.autoAddCss = false; 
 
-const inter = Inter({ subsets: ["latin"] });
+const mulish = Mulish({ subsets: ['latin'] });
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={mulish.className}>
+        {children}        
+      <footer>Bitnovo</footer>
+      </body>
     </html>
   );
 }
