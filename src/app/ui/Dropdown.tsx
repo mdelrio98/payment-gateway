@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef, ForwardedRef } from "react";
+import React, { useState, useEffect, useRef, forwardRef, ForwardedRef, ChangeEvent } from "react";
 import { Option } from '../lib/definitions';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
@@ -7,11 +7,12 @@ interface DropdownProps<T> {
   label: string;
   placeholder: string;
   options: Option<T>[];
-  onSelect: (option: Option<T>) => void;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  value: T;
 }
 
 const Dropdown: React.FC<DropdownProps<unknown>> = forwardRef(
-  ({ label, placeholder, options, onSelect }: DropdownProps<unknown>, ref: ForwardedRef<HTMLDivElement>) => {
+  ({ label, placeholder, options, onChange, value }: DropdownProps<unknown>, ref: ForwardedRef<HTMLDivElement>) => {
     const [selectedOption, setSelectedOption] = useState<Option<unknown> | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -30,16 +31,12 @@ const Dropdown: React.FC<DropdownProps<unknown>> = forwardRef(
       };
     }, []);
 
-    const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleOptionChange = (event: ChangeEvent<HTMLSelectElement>) => {
       const selectedValue = event.target.value;
       const selectedOption = options.find((option) => String(option.value) === selectedValue) || null;
       setSelectedOption(selectedOption);
-      onSelect(selectedOption!); // Assuming onSelect will always receive a non-null option
+      onChange(event);
       setIsOpen(false);
-    };
-
-    const toggleDropdown = () => {
-      setIsOpen(!isOpen);
     };
 
     return (
@@ -47,11 +44,11 @@ const Dropdown: React.FC<DropdownProps<unknown>> = forwardRef(
         {label && <label className="mb-2 text-sm font-medium text-gray-700">{label}</label>}
         <div className="relative">
           <select
-            value={selectedOption?.label ?? ""}
+          defaultValue={placeholder}
             onChange={handleOptionChange}
             className="z-0 w-full border border-gray-300 rounded-md p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="" disabled hidden>
+            <option value={placeholder} disabled hidden>
               {placeholder}
             </option>
             {options.map((option: Option<unknown>) => (

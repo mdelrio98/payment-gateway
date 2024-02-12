@@ -75,8 +75,8 @@ export interface CreateOrderRequest {
     reference: string;
     fiat: FiatCurrency;
     language: string;
-    front_dni: string | null;
-    back_dni: string | null;
+    front_dni: File;
+    back_dni: File;
     first_name: string;
     surname: string;
     address_name: string;
@@ -181,4 +181,5 @@ export interface Option<T> {
   label: string;
   value: T;
 };
+
   
