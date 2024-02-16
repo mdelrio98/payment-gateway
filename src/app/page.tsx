@@ -1,5 +1,7 @@
-import Image from "next/image";
-import Link from "next/link";
+'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@material-tailwind/react';
 
 export default function Home() {
   return (
@@ -13,16 +15,14 @@ export default function Home() {
           height={480}
           priority
         />
-      </div>      
-      <div className="mt-10">
-      <button className="group p-4 rounded-lg border border-transparent transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          >
-        <Link href="/payment-creation">
-          Comenzar
-        </Link>
-      </button>
       </div>
-
+      <div className="mt-10">
+        <Button
+          className="group p-4 rounded-lg border border-transparent transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          placeholder="Comenzar">
+          <Link href="/payment-creation">Comenzar</Link>
+        </Button>
+      </div>
     </main>
   );
 }

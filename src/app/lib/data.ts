@@ -1,60 +1,37 @@
 // Fetching data functions
-/* 
- * export async function fetchRevenue() {
-  // Add noStore() here prevent the response from being cached.
-  // This is equivalent to in fetch(..., {cache: 'no-store'}).
 
+import {
+  CreateOrderRequest,
+  CreateOrderResponse,
+  FiatCurrency,
+  ICurrency,
+  OrderInfoResponse
+} from './definitions';
+import { PromiseResult, handleErrorResponse, promiseResultWrapper } from './utils';
+
+export const X_Device_Id = 'fdacd808-23e9-4f09-8ff9-b4325b7c2c62';
+
+export async function getCurrencies() {
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    // console.log('Data fetch completed after 3 seconds.');
-
-    return data.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
-  }
-} 
- */
-
-import { CreateOrderRequest, CreateOrderResponse, FiatCurrency, ICurrency } from "./definitions";
-import { Option } from '../lib/definitions';
-import { NextApiRequest, NextApiResponse } from "next";
-
-
-export const X_Device_Id = "fdacd808-23e9-4f09-8ff9-b4325b7c2c62";
-
-export async function fetchCurrencies() {
-  try {
-    // Perform the API request to currencies_list endpoint
-    const response = await fetch("https://payments.pre-bnvo.com/api/v1/currencies", {
-      method: "GET",
+    const response = await fetch('https://payments.pre-bnvo.com/api/v1/currencies', {
+      method: 'GET',
       headers: {
-        "X-Device-Id": X_Device_Id,
-        // Add any other required headers here
-      },
+        'X-Device-Id': X_Device_Id
+      }
     });
+
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      handleErrorResponse(response);
     }
 
-    // Parse the response JSON
     const data = await response.json();
     return data as ICurrency[];
-
   } catch (error) {
-    console.error("Error fetching currencies_list:", error);
+    console.error('Error fetching currencies_list:', error);
   }
 }
 
-
-export async function createOrder( requestBody: CreateOrderRequest): Promise<CreateOrderResponse> {
+export async function createOrder(requestBody: CreateOrderRequest): Promise<CreateOrderResponse> {
   try {
     const formData = new FormData();
 
@@ -69,23 +46,39 @@ export async function createOrder( requestBody: CreateOrderRequest): Promise<Cre
     const response = await fetch('https://payments.pre-bnvo.com/api/v1/orders/', {
       method: 'POST',
       headers: {
-        'X-Device-Id': X_Device_Id,
+        'X-Device-Id': X_Device_Id
       },
-      body: formData,
+      body: formData
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      handleErrorResponse(response);
     }
-    const responseData: CreateOrderResponse = await response.json();
-    return responseData;
+
+    return response.json();
   } catch (error) {
     throw error;
   }
 }
 
-export const fiatCurrencyOptions: Option<FiatCurrency>[] = Object.keys(FiatCurrency)
-  .map((key) => ({
-    label: key,
-    value: FiatCurrency[key as keyof typeof FiatCurrency],
-  }));
+export const getOrderInfo = async (identifier: string): Promise<OrderInfoResponse> => {
+  const url = `https://payments.pre-bnvo.com/api/v1/orders/info/${identifier}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-Device-Id': X_Device_Id
+  };
+
+  try {
+    const response = await fetch(url, { headers });
+
+    if (!response.ok) {
+      handleErrorResponse(response);
+    }
+
+    const data = await response.json();
+    return data[0] as OrderInfoResponse;
+  } catch (error) {
+    console.error('Error fetching order information:', error);
+    throw error;
+  }
+};

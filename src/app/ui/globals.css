@@ -1,7 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -17,7 +16,7 @@
   }
 }
 
-body { 
+body {
   box-sizing: border-box;
   margin: 0;
   padding: auto;
@@ -33,7 +32,7 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-footer{
+footer {
   display: flex;
   justify-content: center;
   padding-top: 2rem;
@@ -44,9 +43,3 @@ footer{
     text-wrap: balance;
   }
 }
-
-
-
-
-
-

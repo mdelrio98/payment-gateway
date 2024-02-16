@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Pasarela de Pagos
 
-## Getting Started
+## Descripción
 
-First, run the development server:
+Este proyecto tiene como objetivo la creación de una pasarela de pagos que permita transacciones con criptodivisas en un entorno de testnet. La documentación detallada de los endpoints y los contratos de las criptodivisas de testnet se encuentra disponible [aquí](enlace a la documentación).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Requisitos
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Para realizar peticiones a los endpoints, se debe incluir el Identificador (`X-Device-Id`) en el Header, proporcionado por email.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Tecnologías Utilizadas
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- React.js con hooks
+- Next.js Pages Router
+- TypeScript
+- Redux-sagas
+- Material UI
+- Tailwind CSS
+- Websockets
 
-## Learn More
+## Desarrollo
 
-To learn more about Next.js, take a look at the following resources:
+### 1. Crear Pago y Selección de Moneda
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+El Merchant puede crear un pago ingresando el importe, concepto y seleccionando la criptodivisa. Se utilizará el endpoint `POST orders` para crear el pago y el endpoint `GET currencies` para listar las criptodivisas disponibles. La pantalla debe seguir el diseño proporcionado en Figma. Es importante tener en cuenta el importe máximo y mínimo permitido para cada moneda.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 2. Pasarela de Pago QR
 
-## Deploy on Vercel
+Una vez creado el pago, se deben mostrar los detalles del resumen y la información necesaria para que el Cliente pueda realizar el pago. Estos datos se obtienen mediante el endpoint `GET orders/info`. La pasarela de pago debe actualizarse en tiempo real a través de un websocket. Se debe tener en cuenta el tiempo de expiración de los pagos y redirigir a una pantalla de error (KO) si caduca, y a una pantalla de éxito (OK) si el pago se realiza correctamente.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Web3 (Opcional)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Se valorará positivamente la implementación de una opción para añadir una wallet mediante Web3, como METAMASK.
+
+### Ejemplo de Websocket
+
+`javascript`
+const socket = new WebSocket('wss://payments.pre-bnvo.com/ws/<identifier>');
+
+Simplemente habría que añadir en cada caso el identifier que devuelve el endpoint al crear
+un pago.
+Hay que tener en cuenta que los pagos tienen un tiempo de expiración y que debe llevarnos
+a una pantalla KO si caduca (estado “EX” o “OC”). En cambio, si el pago se realiza
+correctamente (estado “CO” o “AC”), nos llevará a una pantalla OK.
+
+Opcional: Se valorará muy positivamente la opción de añadir mediante Web3 alguna wallet,
+como puede ser METAMASK.
+Para realizar pagos puede utilizar esta web de XRP o la aplicación de test de BTC.
+Si lo ve conveniente puede utilizar el endpoint GET orders para comprobar los pagos que ha
+creado.
+
+
+### Cambios pendientes
+
+- Se podria hacer un manejo de estados con redux para ser mas eficientes a la hora de pedir data al backend. 'CASO CURRENCIES'. Ya que la pido en dos pantallas distintas.
+- Solucionar la comunicacion mediante websockets
+- Cambios UI - Detalles.
+- Opcional: agregar wallet de metamask.
+- Hacer testing
