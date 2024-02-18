@@ -1,5 +1,5 @@
 'use client';
-import { Badge, Button, Card, Typography } from '@material-tailwind/react';
+import { Badge, Button, Card, CardBody, CardHeader, Typography } from '@material-tailwind/react';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import Divider from '../ui/Divider';
 import LoadingData from '../ui/LoadingData';
@@ -79,10 +79,6 @@ const PaymentSummary = () => {
     return () => clearInterval(timer);
   }, [timeRemaining]);
 
-  if (isLoading) {
-    return <LoadingData />;
-  }
-
   const handlePaymentStatus = async (status: Status) => {
     switch (status) {
       case Status.CO:
@@ -117,18 +113,23 @@ const PaymentSummary = () => {
 
   return (
     <Card
-      className="w-full h-full m-2  p-8 gap-8 flex justify-center flex-row items-center rounded-lg shadow-lg border border-gray-200 "
+      className="w-full h-full m-2  p-8 gap-8 flex justify-center flex-col md:flex-row items-center rounded-lg shadow-lg border border-gray-200 "
       placeholder={undefined}>
-      <div className="w-2/4 flex justify-center flex-col">
-        <div className="mt-2 mb-4 flex items-start">
+      <div className="w-full md:w-2/4 flex justify-center flex-col">
+        <CardHeader
+          floated={false}
+          shadow={false}
+          color="transparent"
+          className="m-0 rounded-none"
+          placeholder={undefined}>
           <Typography
             variant="h1"
             className={`${textColorIndigo} font-bold text-xl`}
             placeholder={undefined}>
             Resumen del pedido
           </Typography>
-        </div>
-        <Card
+        </CardHeader>
+        <CardBody
           className=" p-8 gap-8 rounded-sm bg-blue-100 mt-2  items-center"
           placeholder={undefined}>
           <div className="w-full flex flex-col space-y-4">
@@ -247,19 +248,24 @@ const PaymentSummary = () => {
               </div>
             </div>
           </div>
-        </Card>
+        </CardBody>
       </div>
 
-      <div className="w-2/4 h-full flex justify-center flex-col">
-        <div className="mt-2 mb-4">
+      <div className="w-full md:w-2/4 flex justify-center flex-col">
+        <CardHeader
+          floated={false}
+          shadow={false}
+          color="transparent"
+          className="m-0 rounded-none"
+          placeholder={undefined}>
           <Typography
             variant="h1"
             className={`${textColorIndigo} font-bold text-xl`}
             placeholder={undefined}>
             Realiza el pago
           </Typography>
-        </div>
-        <Card
+        </CardHeader>
+        <CardBody
           className="mt-2 p-8 gap-8 items-center rounded-lg shadow-lg border border-gray-200"
           placeholder={undefined}>
           <div className="w-full flex flex-col space-y-4">
@@ -355,7 +361,7 @@ const PaymentSummary = () => {
               </div>
             </div>
           </div>
-        </Card>
+        </CardBody>
       </div>
     </Card>
   );
