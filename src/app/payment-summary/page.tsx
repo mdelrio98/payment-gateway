@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { textColorIndigo } from '../lib/utils';
+import { useTimer } from 'react-timer-hook';
 
 const PaymentSummary = () => {
   const router = useRouter();
@@ -22,11 +23,11 @@ const PaymentSummary = () => {
   const [isOnQr, setIsOnQr] = useState(false);
   const [currencies, setCurrencies] = useState<ICurrency[]>([]);
   const [filteredCurrency, setFilteredCurrency] = useState<ICurrency>();
-  const [timeRemaining, setTimeRemaining] = useState<number>(
-    orderInfo && orderInfo?.expired_time
-      ? Math.floor((new Date(orderInfo?.expired_time).getTime() - Date.now()) / 1000)
-      : 0
-  );
+  const { seconds, minutes, start, restart } = useTimer({
+    expiryTimestamp: orderInfo?.expired_time
+      ? new Date(orderInfo?.expired_time)
+      : new Date(Date.now())
+  });
   const webSocketRef = useRef<WebSocket | null>(null);
 
   const fetchData = async () => {
@@ -53,7 +54,14 @@ const PaymentSummary = () => {
   useEffect(() => {
     fetchData();
     fetchCurrencies();
+    start();
   }, []);
+
+  useEffect(() => {
+    if (orderInfo && orderInfo?.expired_time) {
+      restart(new Date(orderInfo?.expired_time));
+    }
+  }, [orderInfo]);
 
   useEffect(() => {
     currencies &&
@@ -61,23 +69,6 @@ const PaymentSummary = () => {
         currencies.find((currency: ICurrency) => currency.symbol === orderInfo?.currency_id)
       );
   }, [currencies]);
-
-  useEffect(() => {
-    orderInfo?.expired_time &&
-      setTimeRemaining(Math.floor(new Date(orderInfo?.expired_time).getTime() - Date.now()) / 1000);
-  }, [orderInfo]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (timeRemaining > 0) {
-        setTimeRemaining((prevTime) => prevTime - 1);
-      } else {
-        clearInterval(timer);
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeRemaining]);
 
   const handlePaymentStatus = async (status: Status) => {
     switch (status) {
@@ -269,16 +260,18 @@ const PaymentSummary = () => {
           className="mt-2 p-8 gap-8 items-center rounded-lg shadow-lg border border-gray-200"
           placeholder={undefined}>
           <div className="w-full flex flex-col space-y-4">
-            <div className="w-full flex justify-center items-center gap-1 leading-4">
+            <div className="w-full h-full flex justify-center items-center gap-1 leading-4">
               <div>
-                <Image src="/clock.svg" alt="Clock" width={24} height={24} />
+                <Image src="/timer.svg" alt="Timer" width={24} height={24} />
               </div>
               <div>
                 <Typography
                   variant="paragraph"
-                  className={`${textColorIndigo} font-bold`}
+                  className={`${textColorIndigo} font-bold leading-5`}
                   placeholder={undefined}>
-                  {timeRemaining ? format(new Date(timeRemaining), 'mm:ss') : 'Sin expiracion'}
+                  {minutes || seconds
+                    ? `${format(new Date(0, 0, 0, 0, minutes ?? 0, seconds ?? 0), 'mm:ss')}`
+                    : 'Expirado'}
                 </Typography>
               </div>
             </div>

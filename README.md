@@ -17,6 +17,7 @@ Para realizar peticiones a los endpoints, se debe incluir el Identificador (`X-D
 - Material Tailwind
 - Websockets
 - HookForm
+- Date-fns
 
 ## Desarrollo
 
