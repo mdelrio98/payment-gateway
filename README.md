@@ -13,10 +13,10 @@ Para realizar peticiones a los endpoints, se debe incluir el Identificador (`X-D
 - React.js con hooks
 - Next.js Pages Router
 - TypeScript
-- Redux-sagas
-- Material UI
 - Tailwind CSS
+- Material Tailwind
 - Websockets
+- HookForm
 
 ## Desarrollo
 

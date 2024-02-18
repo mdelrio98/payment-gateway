@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-const PaymentSuccess = () => {
+const Success = () => {
   const router = useRouter();
 
   const redirectToCreatePayment = () => {
@@ -46,4 +46,4 @@ const PaymentSuccess = () => {
   );
 };
 
-export default PaymentSuccess;
+export default Success;

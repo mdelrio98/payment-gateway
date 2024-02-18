@@ -56,3 +56,5 @@ export const handleErrorResponse = (response: Response) => {
     throw new Error(`Unexpected error: ${response.statusText}`);
   }
 };
+
+export const textColorIndigo = 'text-indigo-900';

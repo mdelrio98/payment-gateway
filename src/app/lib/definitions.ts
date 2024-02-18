@@ -178,15 +178,15 @@ export interface Time {
   seconds: number;
 }
 
-export const Status = {
-  NR: 'Not Ready',
-  PE: 'Pending',
-  AC: 'Awaiting Completion',
-  IA: 'Insufficient Amount',
-  CO: 'Completed',
-  RF: 'Refunded',
-  CA: 'Cancelled',
-  EX: 'Expired',
-  OC: 'Out of Condition',
-  FA: 'Failed'
-};
+export enum Status {
+  NR = 'Not Ready',
+  PE = 'Pending',
+  AC = 'Awaiting Completion',
+  IA = 'Insufficient Amount',
+  CO = 'Completed',
+  RF = 'Refunded',
+  CA = 'Cancelled',
+  EX = 'Expired',
+  OC = 'Out of Condition',
+  FA = 'Failed'
+}
