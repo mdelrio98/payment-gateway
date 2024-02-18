@@ -3,6 +3,7 @@ import { Mulish } from 'next/font/google';
 import './ui/globals.css';
 import { Suspense } from 'react';
 import LoadingData from './ui/LoadingData';
+import Image from 'next/image';
 
 const mulish = Mulish({ subsets: ['latin'] });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={mulish.className}>
         <Suspense fallback={<LoadingData></LoadingData>}>{children}</Suspense>
-        <footer>Bitnovo</footer>
+        <footer>
+          <Image src={'/bitnovo-footer.svg'} alt="Bitnovo-footer" width={400} height={100} />
+        </footer>
       </body>
     </html>
   );
