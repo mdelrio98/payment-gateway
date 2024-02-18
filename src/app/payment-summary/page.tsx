@@ -28,7 +28,6 @@ const PaymentSummary = () => {
       ? new Date(orderInfo?.expired_time)
       : new Date(Date.now())
   });
-  const webSocketRef = useRef<WebSocket | null>(null);
 
   const fetchData = async () => {
     try {
@@ -68,7 +67,7 @@ const PaymentSummary = () => {
       setFilteredCurrency(
         currencies.find((currency: ICurrency) => currency.symbol === orderInfo?.currency_id)
       );
-  }, [currencies]);
+  }, [currencies, orderInfo]);
 
   const handlePaymentStatus = async (status: Status) => {
     switch (status) {
