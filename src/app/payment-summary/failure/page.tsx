@@ -2,9 +2,9 @@
 import { Typography, Button, Card } from '@material-tailwind/react';
 import React from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
-const Success = () => {
+const Failure = () => {
   const router = useRouter();
 
   const redirectToCreatePayment = () => {
@@ -46,4 +46,4 @@ const Success = () => {
   );
 };
 
-export default Success;
+export default Failure;
